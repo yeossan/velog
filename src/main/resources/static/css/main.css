@@ -1,0 +1,30 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.navbar .logo img {
+    height: 40px;
+}
+
+.navbar-right .login-button {
+    color: white;
+    background-color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;  /* 타원형 버튼을 위해 추가 */
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.navbar-right .login-button:hover {
+    background-color: #555;
+}
+
+.content {
+    padding: 20px;
+}

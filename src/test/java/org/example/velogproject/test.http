@@ -1,0 +1,22 @@
+### Check if username exists
+GET http://localhost/api/users/check-username?username=mryosan1004
+Content-Type: application/json
+
+###
+
+### Check if email exists
+GET http://localhost/api/users/check-email?email=mryosan1004@naver.com
+Content-Type: application/json
+
+###
+
+### Register a new user
+POST http://localhost/api/users/userreg
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+

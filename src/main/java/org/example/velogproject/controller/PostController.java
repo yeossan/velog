@@ -26,7 +26,7 @@ public class PostController {
 
     private final PostService postService;
     private final ImageService imageService;
-    private final UserService userService;
+    private final UserService userService; //
 
     @GetMapping("/write")
     public String showWriteForm(Model model) {

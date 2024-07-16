@@ -29,7 +29,7 @@ public class UserService {
     public User login(String username, String password) {
         User user = findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            // 로그인 성공 시 세션에 사용자 정보 저장
+            // 로그인 성공 시 세션에 사용자 정보 저장..
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpSession session = attr.getRequest().getSession(true); // true = create if not exists
             session.setAttribute("user", user);

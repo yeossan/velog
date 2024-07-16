@@ -1,12 +1,9 @@
 package org.example.velogproject.domain;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.websocket.OnMessage;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +12,10 @@ import java.util.List;
 @Table(name = "posts")
 @Getter
 @Setter
-
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; //글의 id
+    private long id;
 
     @NotBlank(message = "Title is required")
     private String title;
@@ -34,7 +30,4 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
-
-    @Transient
-    private transient MultipartFile[] imageFiles;
 }

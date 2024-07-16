@@ -13,6 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 @Transactional
@@ -25,6 +29,10 @@ public class UserService {
     public User login(String username, String password) {
         User user = findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            // 로그인 성공 시 세션에 사용자 정보 저장
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpSession session = attr.getRequest().getSession(true); // true = create if not exists
+            session.setAttribute("user", user);
             return user;
         }
         return null;
@@ -35,6 +43,7 @@ public class UserService {
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setName(userDto.getName());
         return save(user);
     }
 
@@ -69,8 +78,18 @@ public class UserService {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            return userRepository.findByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        } else if (principal instanceof String) {
+            String username = (String) principal;
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 }

@@ -2,7 +2,6 @@ package org.example.velogproject.service;
 
 import lombok.AllArgsConstructor;
 import org.example.velogproject.domain.Image;
-import org.example.velogproject.domain.Post;
 import org.example.velogproject.repository.ImageRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +19,9 @@ public class ImageService {
 
     public List<Image> findAll() {
         return imageRepository.findAll();
+    }
+
+    public void saveAll(List<Image> images) {
+        imageRepository.saveAll(images);
     }
 }

@@ -14,18 +14,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
 @AllArgsConstructor
 public class UserController {
 
-    private UserService userService;
-    private PostService postService;
+    private final UserService userService;
+    private final PostService postService;
 
     @GetMapping("/main")
     public String main(Model model) {
@@ -33,7 +31,6 @@ public class UserController {
         model.addAttribute("posts", posts);
         return "main";
     }
-
 
     @GetMapping("/userreg")
     public ModelAndView showRegistrationForm(Model model) {
@@ -46,22 +43,18 @@ public class UserController {
     public String registerUser(@Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "회원가입에 실패했습니다. 다시 시도해주세요.");
-            System.out.println("Error::::: " + bindingResult.getAllErrors());
             return "userreg";
         }
 
         try {
             userService.save(user);
             model.addAttribute("registerSuccess", true);
-            System.out.println("User registered successfully::::: " + user);
             return "redirect:/registration-success";
         } catch (DuplicateUsernameException e) {
             bindingResult.rejectValue("username", "error.user", e.getMessage());
-            System.out.println("Username already exists::::: " + user);
             return "userreg";
         } catch (DuplicateEmailException e) {
             bindingResult.rejectValue("email", "error.user", e.getMessage());
-            System.out.println("email already exists::::: " + user);
             return "userreg";
         }
     }

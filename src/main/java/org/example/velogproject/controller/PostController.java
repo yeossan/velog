@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,6 +94,18 @@ public class PostController {
         }
 
         return "redirect:/main";
+    }
+
+    @GetMapping("/main/detail/{name}/{title}")
+    public String viewPostDetail(@PathVariable String name,
+                                 @PathVariable String title,
+                                 Model model) {
+        Post post = postService.findByTitleAndUserNickname(title, name);
+        if (post == null) {
+            return "redirect:/main"; // 게시물이 없으면 메인 페이지로 리다이렉트
+        }
+        model.addAttribute("post", post);
+        return "postdetail"; // 세부 페이지 템플릿 이름
     }
 
     private String saveImageToDisk(MultipartFile file) {

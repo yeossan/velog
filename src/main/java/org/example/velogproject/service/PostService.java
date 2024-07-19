@@ -16,11 +16,21 @@ public class PostService {
 
     @Transactional
     public Post save(Post post) {
-        System.out.println("Saving post: " + post);  // 디버깅 로그 추가
         return postRepository.save(post);
     }
 
     public List<Post> findAll() {
         return postRepository.findAll();
+    }
+
+    public Post findByTitleAndUserNickname(String title, String name) {
+        List<Post> posts = postRepository.findByTitleAndUserNickname(title, name);
+        if (posts.isEmpty()) {
+            throw new RuntimeException("Post not found");
+        }
+        if (posts.size() > 1) {
+            throw new RuntimeException("Multiple posts found");
+        }
+        return posts.getFirst(); // 첫 번째 결과 반환
     }
 }

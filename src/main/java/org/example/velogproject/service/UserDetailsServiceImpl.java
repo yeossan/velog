@@ -32,7 +32,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(Role::getName)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
+
+        // 권한이 없는 경우 기본 권한 추가
+        if (authorities.isEmpty()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(), user.getPassword(), authorities);
     }
 }
+

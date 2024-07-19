@@ -13,28 +13,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User login(String username, String password) {
+        logger.debug("Attempting login for username: {}", username);
         User user = findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            // 로그인 성공 시 세션에 사용자 정보 저장..
-            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            HttpSession session = attr.getRequest().getSession(true); // true = create if not exists
-            session.setAttribute("user", user);
-            return user;
+            logger.debug("Login successful for username: {}", username);
+            return user; // 로그인 성공 시 User 객체 반환
         }
+        logger.debug("Login failed for username: {}", username);
         return null;
     }
 
@@ -42,16 +41,19 @@ public class UserService {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword())); //비밀번호 인코딩
         user.setName(userDto.getName());
         return save(user);
     }
 
     public User save(User user) {
+        logger.debug("Saving user: {}", user.getUsername());
         if (findByUsername(user.getUsername()) != null) {
+            logger.error("Duplicate username: {}", user.getUsername());
             throw new DuplicateUsernameException("이미 사용 중인 아이디입니다.");
         }
         if (findByEmail(user.getEmail()) != null) {
+            logger.error("Duplicate email: {}", user.getEmail());
             throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
         }
         return userRepository.save(user);
@@ -76,6 +78,7 @@ public class UserService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
+            logger.debug("No authentication found or user is not authenticated");
             return null;
         }
         Object principal = authentication.getPrincipal();

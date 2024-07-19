@@ -1,5 +1,6 @@
 package org.example.velogproject.config;
 
+import org.example.velogproject.service.CustomAuthenticationSuccessHandler;
 import org.example.velogproject.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,19 +34,21 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/write").authenticated()
+                        .requestMatchers("/write").hasRole("USER") // 권한 필요
+                        .requestMatchers("/main").hasRole("USER") // /main 접근을 USER 권한으로 설정
                         .anyRequest().permitAll()
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .loginProcessingUrl("/main")
-                        .defaultSuccessUrl("/main")
+                        .loginProcessingUrl("/login")
+                        .successHandler(new CustomAuthenticationSuccessHandler()) // 성공 핸들러 추가
                         .permitAll()
                 )
+
                 .logout(LogoutConfigurer::permitAll)
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()
-                        .maximumSessions(1)
+                        .maximumSessions(5)
                         .expiredUrl("/login?expired")
                 )
                 .sessionManagement(session -> session
@@ -56,8 +59,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
     }
 }
+

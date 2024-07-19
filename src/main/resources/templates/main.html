@@ -11,8 +11,16 @@
             justify-content: space-between;
         }
         .post-item {
-            width: 25%;
-            margin-bottom: 30px;
+            width: calc(25% - 20px);
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .post-item:hover {
+            transform: scale(1.02);
         }
         .post-item img {
             width: 100%;
@@ -25,27 +33,41 @@
         .post-item .post-info {
             font-size: 0.8rem;
             color: #888;
+            padding: 10px;
+        }
+        .post-item .like-info {
+            display: flex;
+            align-items: center;
+        }
+        .post-item .like-info img {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
 <div th:replace="~{header :: header}"></div>
 <div class="container">
-    <h1 class="my-4">Main Page</h1>
     <div class="post-container">
         <div class="post-item" th:each="post : ${posts}">
-            <img th:src="@{'/images/' + ${post.images[0].imagePath}}" alt="Post Image">
-            <div class="post-content">
-                <h5 th:text="${post.title}">Post Title</h5>
-                <p th:text="${#strings.abbreviate(post.content, 100)}">Post Content</p>
-            </div>
-            <div class="post-info">
-                <p>
-                    <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2023-04-01</span>
-                    <span th:text="|${#lists.size(post.comments)} 댓글|">5 댓글</span>
-                    <span th:text="${post.user.nickname}">User Nickname</span>
-                </p>
-            </div>
+            <a th:href="@{/main/detail/{nickname}/{title}(nickname=${post.user.name}, title=${post.title})}" style="text-decoration: none; color: inherit;">
+                <img th:src="${post.images.size() > 0 ? '/images/' + post.images[0].imagePath : '/images/default.png'}" alt="Post Image">
+                <div class="post-content">
+                    <h5 th:text="${post.title}">Post Title</h5>
+                    <p th:text="${#strings.abbreviate(post.content, 100)}">Post Content</p>
+                </div>
+                <div class="post-info">
+                    <p>
+                        <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2023-04-01</span>
+                        <span th:text="${post.user.name}">User name</span>
+                        <span class="like-info">
+                            <img src="/images/heart-fill.png" alt="Likes"> <!-- This should be a static heart icon -->
+                            <span th:text="${post.likes.size()}">0</span>
+                        </span>
+                    </p>
+                </div>
+            </a>
         </div>
     </div>
 </div>

@@ -16,6 +16,7 @@
             </ul>
 
             <div class="d-flex">
+
                 <div th:if="${session.user == null}">
                     <button class="btn btn-outline-dark" onclick="location.href='/login'">로그인</button>
                 </div>

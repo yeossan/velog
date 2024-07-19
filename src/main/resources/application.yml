@@ -24,3 +24,9 @@ server:
 
 upload:
   dir: C:\Users\samsung\Desktop\project\img
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.example.velogproject: DEBUG
+

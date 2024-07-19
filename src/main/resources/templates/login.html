@@ -42,35 +42,35 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('rememberMe').addEventListener('change', function() {
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        var rememberMe = this.checked;
+<!--<script>-->
+<!--    document.getElementById('rememberMe').addEventListener('change', function() {-->
+<!--        var username = document.getElementById('username').value;-->
+<!--        var password = document.getElementById('password').value;-->
+<!--        var rememberMe = this.checked;-->
 
-        // 쿠키 설정
-        if (rememberMe) {
-            setCookie('username', username, 7); // 7일 동안 유효한 쿠키 설정
-            setCookie('password', password, 7);
-        } else {
-            deleteCookie('username');
-            deleteCookie('password');
-        }
-    });
+<!--        // 쿠키 설정-->
+<!--        if (rememberMe) {-->
+<!--            setCookie('username', username, 7); // 7일 동안 유효한 쿠키 설정-->
+<!--            setCookie('password', password, 7);-->
+<!--        } else {-->
+<!--            deleteCookie('username');-->
+<!--            deleteCookie('password');-->
+<!--        }-->
+<!--    });-->
 
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
+<!--    function setCookie(name, value, days) {-->
+<!--        var expires = "";-->
+<!--        if (days) {-->
+<!--            var date = new Date();-->
+<!--            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));-->
+<!--            expires = "; expires=" + date.toUTCString();-->
+<!--        }-->
+<!--        document.cookie = name + "=" + (value || "") + expires + "; path=/";-->
+<!--    }-->
 
-    function deleteCookie(name) {
-        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    }
-</script>
+<!--    function deleteCookie(name) {-->
+<!--        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';-->
+<!--    }-->
+<!--</script>-->
 </body>
 </html>
